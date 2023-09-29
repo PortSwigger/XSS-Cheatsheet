@@ -278,17 +278,14 @@ public class EventHandlersTab extends GenericTab{
         JPopupMenu popupMenu = new JPopupMenu();
         JMenuItem copy = new JMenuItem("Copy");
         copy.setIcon(data.copyIcon);
-        copy.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Copy code to clipboard
-                Event event = eventHandlerModel.getEvent(tblPayloads.convertRowIndexToModel(tblPayloads.getSelectedRow()));
-                StringSelection selection = new StringSelection(event.getSelectedTag().getCode());
-                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                clipboard.setContents(selection, selection);
-            }
-        });
+        JMenuItem copyURL = new JMenuItem("Copy (URL)");
+        copyURL.setIcon(data.copyIcon);
+        // Add action listeners
+        copy.addActionListener(functions.eventHandlersActionListener(eventHandlerModel, tblPayloads, false));
+        copyURL.addActionListener(functions.eventHandlersActionListener(eventHandlerModel, tblPayloads, true));
+        // Add items
         popupMenu.add(copy);
+        popupMenu.add(copyURL);
 
         // Select row on right click
         popupMenu.addPopupMenuListener(functions.createPopUpMenuListener(tblPayloads, popupMenu));
@@ -310,6 +307,7 @@ public class EventHandlersTab extends GenericTab{
                 String codes = "";
                 for (Event event : events){
                     codes += event.getSelectedTag().getCode() + "\n";
+                    functions.updateRecentlyCopied(event.getSelectedTag().getCode());
                 }
                 StringSelection selection = new StringSelection(codes);
                 Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();

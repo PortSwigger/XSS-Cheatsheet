@@ -3,6 +3,7 @@ An extension to incorporate PortSwigger's <a href=https://portswigger.net/web-se
 
 ## Usage
 Usage is straightforward. Load the extension, browse to or search for the desired payload, then right click or Ctrl+C to copy.<br><br>
+A context menu also provides quick access to recently copied payloads in both normal and URL encoded formats.<br><br>
 Payload data is updated via GitHub when loading the extension (and persisted globally if GitHub is unavailable).
 
 ## Credit

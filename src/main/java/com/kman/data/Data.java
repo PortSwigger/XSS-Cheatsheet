@@ -16,6 +16,7 @@ public class Data {
     public Logging logging;
     public Preferences preferences;
     public List<SavedResponse> saved = new ArrayList<>();
+    public List<String> recentlyCopied = new ArrayList<>();
     public List<Event> events = new ArrayList<>();
     public List<String> tagNames = new ArrayList<>();
     public List<String> eventNames = new ArrayList<>();

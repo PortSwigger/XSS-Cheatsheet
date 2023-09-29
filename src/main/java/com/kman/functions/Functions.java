@@ -6,6 +6,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.kman.data.Data;
+import com.kman.models.EventsTableModel;
 import com.kman.objects.Event;
 import com.kman.objects.SavedResponse;
 import com.kman.objects.Tag;
@@ -20,6 +21,8 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -258,15 +261,22 @@ public class Functions {
         return newEvents;
     }
     // Return action listener for copying payloads
-    public ActionListener createActionListener(JTable table, int column){
+    public ActionListener createActionListener(JTable table, int column, boolean urlEncode){
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Copy code to clipboard
                 String s = (String) table.getModel().getValueAt(table.convertRowIndexToModel(table.getSelectedRow()), column);
-                StringSelection selection = new StringSelection(s);
+                StringSelection selection;
+                if (urlEncode){
+                    selection = new StringSelection(URLEncoder.encode(s, StandardCharsets.UTF_8));
+                }
+                else{
+                    selection = new StringSelection(s);
+                }
                 Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                 clipboard.setContents(selection, selection);
+                updateRecentlyCopied(s);
             }
         };
     }
@@ -279,10 +289,31 @@ public class Functions {
                 String payloads = "";
                 for (int row : rows){
                     payloads += table.getValueAt(table.convertRowIndexToModel(row), column) + "\n";
+                    updateRecentlyCopied(table.getValueAt(table.convertRowIndexToModel(row), column).toString());
                 }
                 StringSelection selection = new StringSelection(payloads);
                 Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                 clipboard.setContents(selection, selection);
+            }
+        };
+    }
+    // Return action listener for Event Handlers tab
+    public ActionListener eventHandlersActionListener(EventsTableModel eventHandlerModel, JTable tblPayloads, boolean urlEncode){
+        return new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Copy code to clipboard
+                Event event = eventHandlerModel.getEvent(tblPayloads.convertRowIndexToModel(tblPayloads.getSelectedRow()));
+                StringSelection selection;
+                if (urlEncode){
+                    selection = new StringSelection(URLEncoder.encode(event.getSelectedTag().getCode(), StandardCharsets.UTF_8));
+                }
+                else{
+                    selection = new StringSelection(event.getSelectedTag().getCode());
+                }
+                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                clipboard.setContents(selection, selection);
+                updateRecentlyCopied(event.getSelectedTag().getCode());
             }
         };
     }
@@ -310,5 +341,42 @@ public class Functions {
             public void popupMenuCanceled(PopupMenuEvent e) {
             }
         };
+    }
+    // Load five most recently copied payloads
+    public void loadRecentlyCopied(){
+        // Get persisted setting
+        List<String> recent = data.preferences.getSetting("recentlyCopied");
+        // If empty list
+        if (recent.size() == 0){
+            // Populate with five payloads
+            List<Event> events = searchByTerm("event", "ona").subList(0,5);
+            for (Event e : events){
+                data.recentlyCopied.add(e.getSelectedTag().getCode());
+            }
+        }
+        else{
+            data.recentlyCopied = recent;
+        }
+        saveRecentlyCopied();
+    }
+    // Save recently copied payloads to persisted setting
+    public void saveRecentlyCopied(){
+        List<String> recent = data.recentlyCopied;
+        data.preferences.setSetting("recentlyCopied", recent);
+    }
+    // Update recently copied payloads
+    public void updateRecentlyCopied(String code){
+        // If code already exists
+        if (data.recentlyCopied.contains(code)){
+            // Remove code
+            data.recentlyCopied.remove(code);
+        }
+        else{
+            // Remove last item
+            data.recentlyCopied.remove(data.recentlyCopied.size()-1);
+        }
+        // Add
+        data.recentlyCopied.add(0, code);
+        saveRecentlyCopied();
     }
 }

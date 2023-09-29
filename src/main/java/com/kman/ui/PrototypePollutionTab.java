@@ -48,9 +48,17 @@ public class PrototypePollutionTab extends GenericTab{
         tbl.getActionMap().put("copy", functions.multipleCopyAction(tbl, 1));
         // Popup menu
         JPopupMenu menu = new JPopupMenu();
-        JMenuItem menuItem = new JMenuItem("Copy");
-        menuItem.setIcon(data.copyIcon);
-        menu.add(menuItem);
+        JMenuItem menuItemCopy = new JMenuItem("Copy");
+        menuItemCopy.setIcon(data.copyIcon);
+        JMenuItem menuItemCopyURL = new JMenuItem("Copy (URL)");
+        menuItemCopyURL.setIcon(data.copyIcon);
+        // Add listeners
+        menuItemCopy.addActionListener(functions.createActionListener(tbl, 1, false));
+        menuItemCopyURL.addActionListener(functions.createActionListener(tbl, 1, true));
+        menu.addPopupMenuListener(functions.createPopUpMenuListener(tbl, menu));
+        // Add items
+        menu.add(menuItemCopy);
+        menu.add(menuItemCopyURL);
         tbl.setComponentPopupMenu(menu);
         // Column config
         tbl.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
@@ -64,9 +72,7 @@ public class PrototypePollutionTab extends GenericTab{
         tbl.getColumnModel().getColumn(3).setMinWidth(90);
         tbl.getColumnModel().getColumn(3).setMaxWidth(150);
         tbl.getColumnModel().getColumn(3).setPreferredWidth(150);
-        // Add listeners
-        menuItem.addActionListener(functions.createActionListener(tbl, 1));
-        menu.addPopupMenuListener(functions.createPopUpMenuListener(tbl, menu));
+
         // Add table to scrollpane
         sp.setViewportView(tbl);
         // Add scrollpane to panel

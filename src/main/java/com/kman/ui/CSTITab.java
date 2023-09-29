@@ -48,11 +48,17 @@ public class CSTITab extends GenericTab{
         tbl.getActionMap().put("copy", functions.multipleCopyAction(tbl, 4));
         // Popup menu
         JPopupMenu menu = new JPopupMenu();
-        JMenuItem menuItem = new JMenuItem("Copy");
-        menuItem.setIcon(data.copyIcon);
-        menuItem.addActionListener(functions.createActionListener(tbl, 4));
+        JMenuItem menuItemCopy = new JMenuItem("Copy");
+        menuItemCopy.setIcon(data.copyIcon);
+        JMenuItem menuItemCopyURL = new JMenuItem("Copy (URL)");
+        menuItemCopyURL.setIcon(data.copyIcon);
+        // Add action listeners
+        menuItemCopy.addActionListener(functions.createActionListener(tbl, 4, false));
+        menuItemCopyURL.addActionListener(functions.createActionListener(tbl, 4, true));
         menu.addPopupMenuListener(functions.createPopUpMenuListener(tbl, menu));
-        menu.add(menuItem);
+        // Add items
+        menu.add(menuItemCopy);
+        menu.add(menuItemCopyURL);
         tbl.setComponentPopupMenu(menu);
         // Column config
         tbl.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);

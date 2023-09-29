@@ -175,6 +175,7 @@ public class MainTab extends JPanel {
             tab.loadData();
             tab.update();
         }
+        functions.loadRecentlyCopied();
         return tabbedPane;
     }
 }

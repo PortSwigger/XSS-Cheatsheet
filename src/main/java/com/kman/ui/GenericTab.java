@@ -55,9 +55,13 @@ public class GenericTab extends JPanel {
         tbl.getActionMap().put("copy", functions.multipleCopyAction(tbl, 2));
         // Popup menu
         JPopupMenu menu = new JPopupMenu();
-        JMenuItem menuItem = new JMenuItem("Copy");
-        menuItem.setIcon(data.copyIcon);
-        menu.add(menuItem);
+        JMenuItem menuItemCopy = new JMenuItem("Copy");
+        menuItemCopy.setIcon(data.copyIcon);
+        JMenuItem menuItemCopyURL = new JMenuItem("Copy (URL)");
+        menuItemCopyURL.setIcon(data.copyIcon);
+        // Add menu items
+        menu.add(menuItemCopy);
+        menu.add(menuItemCopyURL);
         tbl.setComponentPopupMenu(menu);
         // Column config
         tbl.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
@@ -68,7 +72,8 @@ public class GenericTab extends JPanel {
         tbl.getColumnModel().getColumn(1).setPreferredWidth(200);
         tbl.getColumnModel().getColumn(2).setCellRenderer(new WordWrapCellRenderer());// Word wrap payload column
         // Add listeners
-        menuItem.addActionListener(functions.createActionListener(tbl, 2));
+        menuItemCopy.addActionListener(functions.createActionListener(tbl, 2, false));
+        menuItemCopyURL.addActionListener(functions.createActionListener(tbl, 2, true));
         menu.addPopupMenuListener(functions.createPopUpMenuListener(tbl, menu));
         // Add table to scrollpane
         sp.setViewportView(tbl);
