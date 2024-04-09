@@ -89,7 +89,7 @@
   {
     "description": "text/vtt",
     "code": "<script>alert(document.domain)<\/script>",
-    "browsers": [
+    "browsers": [.
       "edge"
     ]
   },
@@ -98,6 +98,13 @@
     "code": "<script>alert(document.domain)<\/script>",
     "browsers": [
       "edge"
+    ]
+  },
+  {
+    "description": "#<Mime::NullType:<hex_decimal_memory_address>>; charset=utf-8",
+    "code": "<script>alert(document.domain)</script>",
+    "browsers": [
+      "firefox"
     ]
   }
 ]
